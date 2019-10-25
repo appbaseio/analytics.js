@@ -1,5 +1,5 @@
 // @flow
-import { parseHeaders, getURL } from './utils';
+import { parseHeaders, getURL, btoa } from './utils';
 import fetch from 'cross-fetch';
 
 type AnalyticsConfig = {
