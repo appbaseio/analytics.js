@@ -1,4 +1,4 @@
-const AppbaseAnalytics = require('../dist/@appbaseio/appbase-analytics.cjs');
+const AppbaseAnalytics = require('../dist/@appbaseio/analytics.cjs');
 
 const index = 'gitxplore-latest-app';
 const credentials = 'LsxvulCKp:a500b460-73ff-4882-8d34-9df8064b3b38';

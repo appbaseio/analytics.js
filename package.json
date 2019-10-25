@@ -1,12 +1,11 @@
 {
-  "name": "appbase-analytics",
+  "name": "@appbaseio/analytics",
   "version": "1.0.0-alpha",
   "description": "Universal analytics library for appbase.io apps",
   "main": "src/index.js",
-  "private": false,
-  "main": "dist/@appbaseio/appbase-analytics.cjs.js",
-  "jsnext:main": "dist/@appbaseio/appbase-analytics.es.js",
-  "module": "dist/@appbaseio/appbase-analytics.es.js",
+  "main": "dist/@appbaseio/analytics.cjs.js",
+  "jsnext:main": "dist/@appbaseio/analytics.es.js",
+  "module": "dist/@appbaseio/analytics.es.js",
   "scripts": {
     "watch": "nps watch",
     "start": "nps",

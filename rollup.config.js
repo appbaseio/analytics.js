@@ -15,21 +15,21 @@ const cjs = format === 'cjs';
 let output;
 
 if (es) {
-  output = { file: 'dist/@appbaseio/appbase-analytics.es.js', format: 'es' };
+  output = { file: 'dist/@appbaseio/analytics.es.js', format: 'es' };
 } else if (umd) {
   if (minify) {
     output = {
-      file: 'dist/@appbaseio/appbase-analytics.umd.min.js',
+      file: 'dist/@appbaseio/analytics.umd.min.js',
       format: 'umd'
     };
   } else {
     output = {
-      file: 'dist/@appbaseio/appbase-analytics.umd.js',
+      file: 'dist/@appbaseio/analytics.umd.js',
       format: 'umd'
     };
   }
 } else if (cjs) {
-  output = { file: 'dist/@appbaseio/appbase-analytics.cjs.js', format: 'cjs' };
+  output = { file: 'dist/@appbaseio/analytics.cjs.js', format: 'cjs' };
 } else if (format) {
   throw new Error(`invalid format specified: "${format}".`);
 } else {
@@ -39,7 +39,7 @@ if (es) {
 export default {
   input: 'src/index.js',
   output: {
-    name: umd ? 'aa' : '@appbaseio/appbase-analytics',
+    name: umd ? 'aa' : '@appbaseio/analytics',
     ...output
   },
   external: umd
