@@ -1,0 +1,77 @@
+{
+  "name": "appbase-analytics",
+  "version": "1.0.0-alpha",
+  "description": "Universal analytics library for appbase.io apps",
+  "main": "src/index.js",
+  "private": false,
+  "main": "dist/@appbaseio/appbase-analytics.cjs.js",
+  "jsnext:main": "dist/@appbaseio/appbase-analytics.es.js",
+  "module": "dist/@appbaseio/appbase-analytics.es.js",
+  "scripts": {
+    "watch": "nps watch",
+    "start": "nps",
+    "pretest": "nps build",
+    "test": "nps test",
+    "precommit": "lint-staged",
+    "lint": "nps lint",
+    "prepare": "nps validate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/appbaseio/appbase-analytics.git"
+  },
+  "author": "bietkul <kuldepsaxena155@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/appbaseio/appbase-analytics/issues"
+  },
+  "homepage": "https://github.com/appbaseio/appbase-analytics#readme",
+  "lint-staged": {
+    "*.js": [
+      "eslint"
+    ]
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "cross-fetch": "^3.0.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.4.2",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-flowtype-errors": "^4.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^22.15.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "flow-bin": "^0.105.2",
+    "husky": "^3.0.4",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.2.4",
+    "prettier": "^1.18.2",
+    "eslint": "^6.2.1",
+    "babel-eslint": "^10.0.3",
+    "nps": "^5.9.8",
+    "nps-utils": "^1.7.0",
+    "rollup": "^1.20.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-replace": "^2.2.0",
+    "rollup-plugin-terser": "^5.1.1",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0"
+  },
+  "keywords": [
+    "appbase",
+    "elasticsearch",
+    "search",
+    "analytics"
+  ]
+}
