@@ -8,7 +8,8 @@ type AnalyticsConfig = {
   credentials: string,
   userID?: string,
   customEvents?: Object,
-  headers?: Object
+  headers?: Object,
+  emptyQuery?: boolean
 };
 
 function AppbaseAnalytics(config: AnalyticsConfig = {}) {
@@ -21,6 +22,7 @@ function AppbaseAnalytics(config: AnalyticsConfig = {}) {
   this.searchID = undefined;
   this.searchState = null;
   this.filters = null;
+  this.emptyQuery = config.emptyQuery !== undefined ? config.emptyQuery : true;
   // custom headers
   this.headers = null;
 }
@@ -130,6 +132,16 @@ export default function(config: AnalyticsConfig = {}) {
     return this;
   };
 
+  AppbaseAnalytics.prototype.enableEmptyQuery = function() {
+    this.emptyQuery = true;
+    return this;
+  };
+
+  AppbaseAnalytics.prototype.disableEmptyQuery = function() {
+    this.emptyQuery = false;
+    return this;
+  };
+
   AppbaseAnalytics.prototype.registerClick = function(
     clickPosition: number,
     isSuggestion?: boolean
@@ -170,9 +182,9 @@ export default function(config: AnalyticsConfig = {}) {
   AppbaseAnalytics.prototype.getAnalyticsHeaders = function() {
     return {
       // Support empty query
-      ...(this.searchQuery !== undefined
+      ...(this.searchQuery || this.emptyQuery
         ? {
-            'X-Search-Query': this.searchQuery
+            'X-Search-Query': this.searchQuery || ''
           }
         : null),
       ...(this.searchID
