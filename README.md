@@ -1,3 +1,5 @@
+[![NPM Version](https://img.shields.io/npm/v/@appbaseio/analytics.svg?style=flat)](https://www.npmjs.com/package/@appbaseio/analytics)
+
 ### Appbase Analytics
 
 A universal analytics library that allows you to register click, conversion and custom events for appbase.io apps.
@@ -361,8 +363,6 @@ aa.setFilters({
   category: 'shoes'
 });
 ```
-
-````
 
 ##
 
