@@ -17,14 +17,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/appbaseio/appbase-analytics.git"
+    "url": "git+https://github.com/appbaseio/analytics.git"
   },
   "author": "bietkul <kuldepsaxena155@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/appbaseio/appbase-analytics/issues"
+    "url": "https://github.com/appbaseio/analytics/issues"
   },
-  "homepage": "https://github.com/appbaseio/appbase-analytics#readme",
+  "homepage": "https://github.com/appbaseio/analytics#readme",
   "lint-staged": {
     "*.js": [
       "eslint"
