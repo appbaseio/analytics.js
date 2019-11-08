@@ -4,7 +4,7 @@
 
 A universal analytics library that allows you to register click, conversion and custom events for appbase.io apps.
 
-## Table of Contents
+## TOC
 
 - [Getting started](#getting-started)
   - [Browser](#browser)
