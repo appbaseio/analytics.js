@@ -18,6 +18,7 @@ A universal analytics library that allows you to register click, conversion and 
   - [Set search state](#set-search-state)
 - [API Reference](#api-reference)
 - [Contributing](#contributing)
+- [Other Projects You Might Like](#other-projects-you-might-like)
 - [License](#license)
 
 ## Getting started
@@ -68,6 +69,8 @@ aa({
   credentials: 'APP_CREDENTIALS'
 });
 ```
+
+[⬆ Back to Top](#appbase-analytics)
 
 ## Use cases
 
@@ -173,6 +176,8 @@ aa().setSearchState({
   }
 });
 ```
+
+[⬆ Back to Top](#appbase-analytics)
 
 ## API Reference
 
@@ -368,7 +373,7 @@ aa.setFilters({
 
 ```ts
 clearFilters();
-````
+```
 
 Clear the filters
 
@@ -431,6 +436,8 @@ getAnalyticsHeaders(): Object
 
 Returns a list of search headers based on the analytics state which needs to be applied to the `_search` & `_msearch` request to create a search session.
 
+[⬆ Back to Top](#appbase-analytics)
+
 ## Contributing
 
 Fork the repo and run the following command to run & test locally.
@@ -439,6 +446,28 @@ Fork the repo and run the following command to run & test locally.
 yarn && yarn test
 ```
 
+## Other Projects You Might Like
+
+- [**Arc**](https://github.com/appbaseio/arc) API Gateway for ElasticSearch (Out of the box Security, Rate Limit Features, Record Analytics and Request Logs).
+
+- [**ReactiveSearch**](https://github.com/appbaseio/reactivesearch) ReactiveSearch is an Elasticsearch UI components library for React, React Native and Vue. It has 25+ components consisting of Lists, Ranges, Search UIs, Result displays and a way to bring any existing UI component into the library.
+
+- **searchbox** A lightweight and performance focused searchbox UI libraries to query and display results from your ElasticSearch app (aka index).
+
+  - [**Vanilla**](https://github.com/appbaseio/searchbox) - (~16kB Minified + Gzipped)
+  - [**React**](https://github.com/appbaseio/react-searchbox) - (~30kB Minified + Gzipped)
+  - [**Vue**](https://github.com/appbaseio/vue-searchbox) - (~22kB Minified + Gzipped)
+
+- [**Dejavu**](https://github.com/appbaseio/dejavu) allows viewing raw data within an appbase.io (or Elasticsearch) app. **Soon to be released feature:** An ability to import custom data from CSV and JSON files, along with a guided walkthrough on applying data mappings.
+
+- [**Mirage**](https://github.com/appbaseio/mirage) ReactiveSearch components can be extended using custom Elasticsearch queries. For those new to Elasticsearch, Mirage provides an intuitive GUI for composing queries.
+
+- [**ReactiveMaps**](https://github.com/appbaseio/reactivesearch/tree/next/packages/maps) is a similar project to Reactive Search that allows building realtime maps easily.
+
+- [**appbase-js**](https://github.com/appbaseio/appbase-js) While building search UIs is dandy with Reactive Search, you might also need to add some input forms. **appbase-js** comes in handy there.
+
 ## License
 
-This library is [MIT licensed](LICENSE.md).
+This library is [Apache licensed](LICENSE.md).
+
+[⬆ Back to Top](#appbase-analytics)
