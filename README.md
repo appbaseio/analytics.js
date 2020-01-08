@@ -415,8 +415,8 @@ Disables the recording of empty queries.
 
 ```ts
 registerClick(
-clickPosition: number,
-isSuggestion?: boolean
+  clickPosition: number,
+  isSuggestion?: boolean
 ): Promise<any>
 ```
 
