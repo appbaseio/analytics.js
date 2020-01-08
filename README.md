@@ -41,7 +41,7 @@ You can use the UMD build in browsers by following the below snippet:
 #### 2. Initialization
 
 ```js
-aa({
+const aaInstance = aa({
   index: 'APP_NAME',
   credentials: 'APP_CREDENTIALS'
 });
@@ -64,7 +64,7 @@ yarn add @appbaseio/analytics
 ```js
 const aa = require('@appbaseio/analytics');
 
-aa({
+const aaInstance = aa({
   index: 'APP_NAME',
   credentials: 'APP_CREDENTIALS'
 });
@@ -85,12 +85,14 @@ We recommend to use `getAnalyticsHeaders` method to attach the analytics headers
 ```js
 const aa = require('@appbaseio/analytics');
 
-aa({
+const aaInstance = aa({
   index: 'APP_NAME',
   credentials: 'APP_CREDENTIALS'
 });
 
-const analyticsHeaders = aa.setSearchQuery('harry').getAnalyticsHeaders();
+const analyticsHeaders = aaInstance
+  .setSearchQuery('harry')
+  .getAnalyticsHeaders();
 
 fetch(`https://scalr.api.appbse.io/${APP_NAME}/_search`, {
   headers: analyticsHeaders
@@ -99,7 +101,7 @@ fetch(`https://scalr.api.appbse.io/${APP_NAME}/_search`, {
     const searchID = res.headers.get('X-Search-Id');
     // Set the search id back to the analytics instance
     if (searchID) {
-      aa.setSearchID(searchID);
+      aaInstance.setSearchID(searchID);
     }
   })
   .catch(err => {
@@ -188,7 +190,7 @@ Although this library supports chaining i.e you can set and clear anything whene
 ```js
 const aa = require('@appbaseio/analytics');
 
-aa({
+const aaInstance = aa({
   index: 'APP_NAME',
   credentials: 'APP_CREDENTIALS'
 });
@@ -314,7 +316,7 @@ Sets the custom events which will override the existing custom events and will b
 For example:
 
 ```js
-aa.setCustomEvents({
+aa().setCustomEvents({
   platform: 'mac',
   user_segment: 'free'
 });
@@ -337,7 +339,7 @@ addCustomEvent(customEvent: Object)
 Add a particular custom event in the existing custom events.
 
 ```js
-aa.addCustomEvent({
+aa().addCustomEvent({
   platform: 'mac'
 });
 ```
@@ -351,7 +353,7 @@ removeCustomEvent(eventKey: string)
 Remove a custom event by key
 
 ```js
-aa.removeCustomEvent('platform');
+aa().removeCustomEvent('platform');
 ```
 
 ##
@@ -363,7 +365,7 @@ setFilters(filters: Object)
 Set the filters which will be used to retrieve the search headers.
 
 ```js
-aa.setFilters({
+aa().setFilters({
   brand: 'Adidas',
   category: 'shoes'
 });
