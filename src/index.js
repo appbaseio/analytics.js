@@ -1,251 +1,231 @@
 // @flow
-import { parseHeaders, getURL, btoa } from './utils';
+import { btoa } from './utils';
 import fetch from 'cross-fetch';
+import {
+  validateIndex,
+  validateCredentials,
+  validateURL,
+  validateQuery,
+  validateClickObjects,
+  validateConversionObjects
+} from './validate';
+
+type Hit = {
+  id?: string,
+  type?: string,
+  source?: string
+};
 
 type AnalyticsConfig = {
   index: string,
   url: string,
   credentials: string,
   userID?: string,
-  customEvents?: Object,
-  headers?: Object,
-  emptyQuery?: boolean
+  globalEventData?: { [key: string]: string },
+  headers?: Object
 };
 
-function AppbaseAnalytics(config: AnalyticsConfig = {}) {
-  this.index = config.index;
-  this.credentials = config.credentials;
-  this.url = getURL(config.url);
-  this.userID = config.userID;
-  this.customEvents = config.customEvents;
-  this.searchQuery = undefined;
-  this.searchID = undefined;
-  this.searchState = null;
-  this.filters = null;
-  this.emptyQuery = config.emptyQuery !== undefined ? config.emptyQuery : true;
-  // custom headers
-  this.headers = null;
-}
+type SearchConfig = {
+  query: string,
+  eventData?: { [key: string]: string },
+  filters?: { [key: string]: string },
+  userID?: string,
+  hits?: Array<Hit>
+};
 
-export default function(config: AnalyticsConfig = {}) {
-  const client = new AppbaseAnalytics(config);
+type SearchRequestBody = {
+  query: string,
+  event_data?: { [key: string]: string },
+  filters?: { [key: string]: string },
+  user_id?: string,
+  hits?: Array<Hit>
+};
 
-  AppbaseAnalytics.prototype.setIndex = function(index: string) {
-    this.index = index;
-    return this;
+type ClickConfig = {
+  objects: { [key: string]: number },
+  type?: 'result' | 'suggestion',
+  query?: string,
+  queryID?: string,
+  eventData?: { [key: string]: string },
+  userID?: string
+};
+
+type ClickRequestBody = {
+  click_on: { [key: string]: number },
+  click_type?: 'result' | 'suggestion',
+  query?: string,
+  query_id?: string,
+  event_data?: { [key: string]: string },
+  user_iD?: string
+};
+
+type ConversionConfig = {
+  objects: Array<string>,
+  query?: string,
+  queryID?: string,
+  eventData?: { [key: string]: string },
+  userID?: string
+};
+
+type ConversionRequestBody = {
+  conversion_on: Array<string>,
+  query?: string,
+  query_id?: string,
+  event_data?: { [key: string]: string },
+  user_iD?: string
+};
+
+type CallBack = (err: any, res: any) => void;
+
+type Metrics = {
+  index: string,
+  url: string,
+  credentials: string,
+  globalEventData?: { [key: string]: string },
+  userID?: string,
+  queryID: string,
+  headers?: Object,
+  search?: (searchConfig: SearchConfig, callback: CallBack) => void,
+  click?: (clickConfig: ClickConfig, callback: CallBack) => void,
+  conversion?: (conversionConfig: ConversionConfig, callback: CallBack) => void,
+  getQueryID?: () => string,
+  setUserID?: (userID: string) => void,
+  setGlobalEventData?: (events: { [key: string]: string }) => void,
+  setHeaders?: (headers: Object) => void,
+  _request?: (url: string, body: Object, callback?: CallBack) => void
+};
+
+function initClient(config: AnalyticsConfig = {}) {
+  const metrics: Metrics = {
+    credentials: config.credentials,
+    index: config.index,
+    url: config.url,
+    userID: config.userID,
+    globalEventData: config.globalEventData,
+    queryID: '',
+    headers: null
   };
 
-  AppbaseAnalytics.prototype.setCredentials = function(credentials: string) {
-    this.credentials = credentials;
-    return this;
-  };
+  validateIndex(metrics.index);
+  validateCredentials(metrics.credentials);
+  validateURL(metrics.url);
 
-  AppbaseAnalytics.prototype.setURL = function(url: string) {
-    this.url = getURL(url);
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setHeaders = function(headers: Object) {
-    this.headers = headers;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setSearchQuery = function(searchQuery: string) {
-    this.searchQuery = searchQuery;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.clearSearchQuery = function() {
-    this.searchQuery = undefined;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setSearchID = function(searchID: string) {
-    this.searchID = searchID;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.clearSearchID = function() {
-    this.searchID = undefined;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setSearchState = function(searchState: string) {
-    this.searchState = searchState;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.clearSearchState = function() {
-    this.searchState = null;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setUserID = function(userID: string) {
-    this.userID = userID;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.clearUserID = function() {
-    this.userID = null;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setCustomEvents = function(customEvents: Object) {
-    this.customEvents = customEvents;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.clearCustomEvents = function() {
-    this.customEvents = null;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.addCustomEvent = function(customEvent: Object) {
-    this.customEvents = { ...this.customEvents, customEvent };
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.removeCustomEvent = function(eventKey: string) {
-    const { [eventKey]: del, ...rest } = this.customEvents;
-    this.customEvents = rest;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.setFilters = function(filters: Object) {
-    this.filters = filters;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.clearFilters = function() {
-    this.filters = null;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.addFilter = function(filter: Object) {
-    this.filters = { ...this.filters, filter };
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.removeFilter = function(filterKey: string) {
-    const { [filterKey]: del, ...rest } = this.filters;
-    this.filters = rest;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.enableEmptyQuery = function() {
-    this.emptyQuery = true;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.disableEmptyQuery = function() {
-    this.emptyQuery = false;
-    return this;
-  };
-
-  AppbaseAnalytics.prototype.registerClick = function(
-    clickPosition: number,
-    isSuggestion?: boolean
-  ): Promise<any> {
-    if (Number.isNaN(parseInt(clickPosition, 10))) {
-      throw new Error('appbase-analytics: click position must be an integer.');
-    }
-    const commonHeaders = this._recordEventHeaders();
-    return fetch(`${this.url}/${this.index}/_analytics`, {
-      method: 'POST',
+  metrics._request = (
+    url: string,
+    body?: Object,
+    callback?: CallBack
+  ): void => {
+    return fetch(`${metrics.url}/${metrics.index}/_analytics/${url}`, {
+      method: 'PUT',
       headers: {
-        ...commonHeaders,
-        ...(isSuggestion
-          ? {
-              'X-Search-Suggestions-Click': true,
-              'X-Search-Suggestions-ClickPosition': clickPosition
+        ...metrics.headers,
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${btoa(metrics.credentials)}`
+      },
+      body: JSON.stringify(body)
+    })
+      .then(response => {
+        if (callback) {
+          callback(null, response);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        if (callback) {
+          callback(err, null);
+        }
+      });
+  };
+
+  // To register a search
+  metrics.search = (searchConfig: SearchConfig, callback?: CallBack) => {
+    validateQuery(searchConfig.query);
+    const captureQueryID = (err: any, res: any) => {
+      if (res) {
+        res
+          .json()
+          .then(response => {
+            if (response && response.query_id) {
+              metrics.queryID = response.query_id;
             }
-          : {
-              'X-Search-Click': true,
-              'X-Search-ClickPosition': clickPosition
-            })
+          })
+          .catch(error => {
+            console.error(error);
+          });
       }
-    });
-  };
-
-  AppbaseAnalytics.prototype.registerConversion = function(): Promise<any> {
-    const commonHeaders = this._recordEventHeaders();
-    return fetch(`${this.url}/${this.index}/_analytics`, {
-      method: 'POST',
-      headers: {
-        ...commonHeaders,
-        'X-Search-Conversion': true
+      if (callback) {
+        callback(err, res);
       }
-    });
-  };
-
-  // Headers value will be based on the analytics current state, may or may not present
-  AppbaseAnalytics.prototype.getAnalyticsHeaders = function() {
-    return {
-      // Support empty query
-      ...(this.searchQuery || this.emptyQuery
-        ? {
-            'X-Search-Query': this.searchQuery || ''
-          }
-        : null),
-      ...(this.searchID
-        ? {
-            'X-Search-Id': this.searchID
-          }
-        : null),
-      ...(this.searchState
-        ? {
-            'X-Search-State': JSON.stringify(this.searchState)
-          }
-        : null),
-      ...(this.userID
-        ? {
-            'X-User-Id': this.userID
-          }
-        : null),
-      ...(this.customEvents
-        ? {
-            'X-Search-CustomEvent': parseHeaders(this.customEvents)
-          }
-        : null),
-      ...(this.filters
-        ? {
-            'X-Search-Filters': parseHeaders(this.filters)
-          }
-        : null)
     };
+    // just to avoid the flow type error
+    if (metrics._request) {
+      const requestBody: SearchRequestBody = {
+        query: searchConfig.query,
+        event_data: searchConfig.eventData,
+        filters: searchConfig.filters,
+        hits: searchConfig.hits,
+        user_id: searchConfig.userID
+      };
+      metrics._request('search', requestBody, captureQueryID);
+    }
   };
 
-  AppbaseAnalytics.prototype._recordEventHeaders = function() {
-    if (!this.index) {
-      throw new Error(
-        'appbase-analytics: A valid index must be present to record an event.'
-      );
+  // To register a click
+  metrics.click = (clickConfig: ClickConfig, callback?: CallBack) => {
+    validateQuery(clickConfig.query, clickConfig.queryID);
+    validateClickObjects(clickConfig.objects);
+    // just to avoid the flow type error
+    if (metrics._request) {
+      const requestBody: ClickRequestBody = {
+        click_on: clickConfig.objects,
+        click_type: clickConfig.type || 'result',
+        query: clickConfig.query,
+        query_id: clickConfig.queryID,
+        event_data: clickConfig.eventData,
+        user_id: clickConfig.userID
+      };
+      metrics._request('click', requestBody, callback);
     }
-    if (!this.credentials) {
-      throw new Error('appbase-analytics: Auth credentials is missing.');
-    }
-    if (!this.searchID) {
-      throw new Error(
-        'appbase-analytics: searchID must be present to record an event.'
-      );
-    }
-    return {
-      ...this.headers,
-      'Content-Type': 'application/json',
-      Authorization: `Basic ${btoa(this.credentials)}`,
-      'X-Search-Id': this.searchID,
-      ...(this.userID
-        ? {
-            'X-User-Id': this.userID
-          }
-        : null),
-      ...(this.customEvents
-        ? {
-            'X-Search-CustomEvent': parseHeaders(this.customEvents)
-          }
-        : null)
-    };
   };
 
-  return client;
+  // To register a conversion
+  metrics.conversion = (
+    conversionConfig: ConversionConfig,
+    callback?: CallBack
+  ) => {
+    validateQuery(conversionConfig.query, conversionConfig.queryID);
+    validateConversionObjects(conversionConfig.objects);
+    // just to avoid the flow type error
+    if (metrics._request) {
+      const requestBody: ConversionRequestBody = {
+        conversion_on: conversionConfig.objects,
+        query: conversionConfig.query,
+        query_id: conversionConfig.queryID,
+        event_data: conversionConfig.eventData,
+        user_id: conversionConfig.userID
+      };
+      metrics._request('conversion', requestBody, callback);
+    }
+  };
+
+  // Sets the userID
+  metrics.setUserID = (userID: string) => {
+    metrics.userID = userID;
+  };
+
+  // Sets the global events
+  metrics.setGlobalEventData = (globalEvents: { [key: string]: string }) => {
+    metrics.globalEventData = globalEvents;
+  };
+
+  // Sets the headers
+  metrics.setHeaders = (headers: Object) => {
+    metrics.headers = headers;
+  };
+
+  return metrics;
 }
+
+export default {
+  init: initClient
+};
