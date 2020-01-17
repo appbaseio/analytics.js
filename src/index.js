@@ -13,7 +13,7 @@ import {
 type Hit = {
   id?: string,
   type?: string,
-  source?: string
+  source?: Object
 };
 
 type AnalyticsConfig = {
@@ -41,10 +41,10 @@ type SearchRequestBody = {
 };
 
 type ClickConfig = {
-  objects: { [key: string]: number },
-  type?: 'result' | 'suggestion',
   query?: string,
   queryID?: string,
+  isSuggestionClick?: boolean,
+  objects: { [key: string]: number },
   eventData?: { [key: string]: string }
 };
 
@@ -179,7 +179,7 @@ function initClient(config: AnalyticsConfig = {}) {
     if (metrics._request) {
       const requestBody: ClickRequestBody = {
         click_on: clickConfig.objects,
-        click_type: clickConfig.type || 'result',
+        click_type: clickConfig.isSuggestionClick ? 'suggestion' : 'result',
         query: clickConfig.query,
         query_id: clickConfig.queryID,
         event_data: clickConfig.eventData
