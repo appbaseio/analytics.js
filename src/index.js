@@ -29,7 +29,6 @@ type SearchConfig = {
   query: string,
   eventData?: { [key: string]: string },
   filters?: { [key: string]: string },
-  userID?: string,
   hits?: Array<Hit>
 };
 
@@ -46,8 +45,7 @@ type ClickConfig = {
   type?: 'result' | 'suggestion',
   query?: string,
   queryID?: string,
-  eventData?: { [key: string]: string },
-  userID?: string
+  eventData?: { [key: string]: string }
 };
 
 type ClickRequestBody = {
@@ -63,8 +61,7 @@ type ConversionConfig = {
   objects: Array<string>,
   query?: string,
   queryID?: string,
-  eventData?: { [key: string]: string },
-  userID?: string
+  eventData?: { [key: string]: string }
 };
 
 type ConversionRequestBody = {
@@ -115,6 +112,11 @@ function initClient(config: AnalyticsConfig = {}) {
     body?: Object,
     callback?: CallBack
   ): void => {
+    const finalBody = {
+      ...body,
+      user_id: metrics.userID,
+      event_data: { ...(body && body.event_data), ...metrics.globalEventData }
+    };
     return fetch(`${metrics.url}/${metrics.index}/_analytics/${url}`, {
       method: 'PUT',
       headers: {
@@ -122,7 +124,7 @@ function initClient(config: AnalyticsConfig = {}) {
         'Content-Type': 'application/json',
         Authorization: `Basic ${btoa(metrics.credentials)}`
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(finalBody)
     })
       .then(response => {
         if (callback) {
@@ -163,8 +165,7 @@ function initClient(config: AnalyticsConfig = {}) {
         query: searchConfig.query,
         event_data: searchConfig.eventData,
         filters: searchConfig.filters,
-        hits: searchConfig.hits,
-        user_id: searchConfig.userID
+        hits: searchConfig.hits
       };
       metrics._request('search', requestBody, captureQueryID);
     }
@@ -181,8 +182,7 @@ function initClient(config: AnalyticsConfig = {}) {
         click_type: clickConfig.type || 'result',
         query: clickConfig.query,
         query_id: clickConfig.queryID,
-        event_data: clickConfig.eventData,
-        user_id: clickConfig.userID
+        event_data: clickConfig.eventData
       };
       metrics._request('click', requestBody, callback);
     }
@@ -201,8 +201,7 @@ function initClient(config: AnalyticsConfig = {}) {
         conversion_on: conversionConfig.objects,
         query: conversionConfig.query,
         query_id: conversionConfig.queryID,
-        event_data: conversionConfig.eventData,
-        user_id: conversionConfig.userID
+        event_data: conversionConfig.eventData
       };
       metrics._request('conversion', requestBody, callback);
     }
