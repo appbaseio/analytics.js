@@ -428,7 +428,7 @@ conversion configuration options:
 | ------------- | --------------- | --------------- | ----------------------------------------------------------------------- |
 | **`query`**   | `string`        | None            | Search query, set to empty string to register as an empty query search. |
 | **`queryID`** | `string`        | None            | Search query ID returned from Appbase.                                  |
-| **`objects`** | `Array<string>` | None (required) | To set the converted object ids, for example: ["iphoneX_1234"].         |
+| **`objects`** | `Array<string>` | None (required) | To set the converted object ids, for example: `["iphoneX_1234"]`.       |
 | `eventData`   | `object`        | null            | To set the custom events, for e.g `{ "platform": mac }`                 |
 
 <b>Note: </b>
