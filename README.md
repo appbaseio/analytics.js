@@ -319,12 +319,13 @@ search(searchConfig: Object, callback: CallBack) => void
 
 search configuration options:
 
-| Option      | Type     | Default         | Description                                                                            |
-| ----------- | -------- | --------------- | -------------------------------------------------------------------------------------- |
-| **`query`** | `string` | None (required) | Search query, set to empty string to register as an empty query search.                |
-| `eventData` | `object` | null            | To set the search filters, for e.g `{ "year": 2018 }`                                  |
-| `filters`   | `object` | null            | To set the custom events, for e.g `{ "platform": mac }`                                |
-| `hits`      | `array`  | null            | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
+| Option        | Type     | Default | Description                                                                            |
+| ------------- | -------- | ------- | -------------------------------------------------------------------------------------- |
+| **`query`**   | `string` | None    | Search query, set to empty string to register as an empty query search.                |
+| **`queryID`** | `string` | None    | Search query ID returned from Appbase.                                                 |
+| `eventData`   | `object` | null    | To set the search filters, for e.g `{ "year": 2018 }`                                  |
+| `filters`     | `object` | null    | To set the custom events, for e.g `{ "platform": mac }`                                |
+| `hits`        | `array`  | null    | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
 
 An example with all possible options:
 
@@ -332,6 +333,8 @@ An example with all possible options:
 search(
   {
     query: 'iphone',
+    // or
+    queryID: 'cf827a07-60a6-43ef-ab93-e1f8e1e3e1a8',
     eventData: {
       source: 'promoted_results'
     },

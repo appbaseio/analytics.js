@@ -26,14 +26,16 @@ type AnalyticsConfig = {
 };
 
 type SearchConfig = {
-  query: string,
+  query?: string,
+  queryID?: string,
   eventData?: { [key: string]: string },
   filters?: { [key: string]: string },
   hits?: Array<Hit>
 };
 
 type SearchRequestBody = {
-  query: string,
+  query?: string,
+  query_id?: string,
   event_data?: { [key: string]: string },
   filters?: { [key: string]: string },
   user_id?: string,
@@ -141,7 +143,7 @@ function initClient(config: AnalyticsConfig = {}) {
 
   // To register a search
   metrics.search = (searchConfig: SearchConfig, callback?: CallBack) => {
-    validateQuery(searchConfig.query);
+    validateQuery(searchConfig.query, searchConfig.queryID);
     const captureQueryID = (err: any, res: any) => {
       if (res) {
         res
@@ -163,6 +165,7 @@ function initClient(config: AnalyticsConfig = {}) {
     if (metrics._request) {
       const requestBody: SearchRequestBody = {
         query: searchConfig.query,
+        query_id: searchConfig.queryID,
         event_data: searchConfig.eventData,
         filters: searchConfig.filters,
         hits: searchConfig.hits
