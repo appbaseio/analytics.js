@@ -239,7 +239,7 @@ aaInstance.conversion({
 
 ### Set user
 
-It sets the unique identification for each user to distinguish analytics events for users.
+It allows you to set the `userID`.
 
 ```ts
 const aa = require('@appbaseio/analytics');
@@ -258,7 +258,7 @@ aaInstance.setUserID('jon@abc.com');
 
 ### Set global events
 
-Sets the custom events which will be attached for each event.
+To set the custom events which will be attached for each event recorded by the instance.
 
 For example:
 
@@ -298,34 +298,57 @@ const aaInstance = aa.init({
 
 Optional configuration options:
 
-| Option            | Type     | Default         | Description                                |
-| ----------------- | -------- | --------------- | ------------------------------------------ |
-| **`index`**       | `string` | None (required) | Elasticsearch index name.                  |
-| **`credentials`** | `string` | None (required) | API key for appbase.io hosted application. |
-| **`url`**         | `string` | None (required) | Appbaseio cluster url.                     |
-| `userID`          | `string` | null            | Sets the userID to be recorded.            |
-| `globalEventData` | `object` | null            | To set the custom events                   |
-| `headers`         | `object` | null            | To set the custom headers                  |
+| Option            | Type                | Description                                                                                                                                                                                                                          |
+| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`index`**       | `string` (required) | Elasticsearch index name.                                                                                                                                                                                                            |
+| **`credentials`** | `string` (required) | credentials as they appear on the Appbaseio dashboard. It should be a string of the format <b>username:password</b> and is used for authenticating the app.                                                                          |
+| **`url`**         | `string` (required) | Appbaseio cluster URL.                                                                                                                                                                                                               |
+| `userID`          | `string`            | UserID allows you to record events for a particular user. For example, you may want to know that how many different users are using the search.                                                                                      |
+| `globalEventData` | `Object`            | It allows you to set the <b>global</b> custom events which can be used to build your own analytics on top of the appbase.io analytics. [Read More](https://docs.appbase.io/docs/analytics/Implement/#how-to-implement-custom-events) |
+| `headers`         | `Object`            | Sometimes it may require to set extra headers to the analytics API. For example, you're using proxy middleware which adds an additional security layer.                                                                              |
 
-### Methods
+An example with all possible options:
+
+```ts
+const aa = require('@appbaseio/analytics');
+
+const aaInstance = aa.init({
+  index: 'books',
+  credentials: 'foo:bar',
+  url: 'http://localhost:8000',
+  userID: 'jon@abc.com',
+  globalEventData: {
+    platform: 'mac'
+  },
+  headers: {
+    'X-auth-token': 'XYZ'
+  }
+});
+```
+
+### Instance Methods
 
 #### Record Search
 
 ```ts
 
-search(searchConfig: Object, callback: CallBack) => void
+search(searchConfig: Object, callback: Function)
 
 ```
 
 search configuration options:
 
-| Option        | Type     | Default | Description                                                                            |
-| ------------- | -------- | ------- | -------------------------------------------------------------------------------------- |
-| **`query`**   | `string` | None    | Search query, set to empty string to register as an empty query search.                |
-| **`queryID`** | `string` | None    | Search query ID returned from Appbase.                                                 |
-| `eventData`   | `object` | null    | To set the search filters, for e.g `{ "year": 2018 }`                                  |
-| `filters`     | `object` | null    | To set the custom events, for e.g `{ "platform": mac }`                                |
-| `hits`        | `array`  | null    | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
+| Option        | Type     | Description                                                                            |
+| ------------- | -------- | -------------------------------------------------------------------------------------- |
+| **`query`**   | `string` | Search query, set to empty string to register as an empty query search.                |
+| **`queryID`** | `string` | Search query ID returned from Appbase.                                                 |
+| `eventData`   | `Object` | To set the custom events, for e.g `{ "platform": mac }`                                |
+| `filters`     | `Object` | It allows to record the applied facets on the search query, for e.g `{ "year": 2018 }` |
+| `hits`        | `Array`  | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
+
+<b>Note: </b>
+
+`query` or `queryID` must be present.
 
 An example with all possible options:
 
@@ -374,22 +397,22 @@ getQueryID(): string
 To record a click event
 
 ```ts
-click(clickConfig: Object, callback: CallBack) => void
+click(clickConfig: Object, callback: Function)
 ```
 
 click configuration options:
 
-| Option              | Type                      | Default         | Description                                                                                   |
-| ------------------- | ------------------------- | --------------- | --------------------------------------------------------------------------------------------- |
-| **`query`**         | `string`                  | None            | Search query, set to empty string to register as an empty query search.                       |
-| **`queryID`**       | `string`                  | None            | Search query ID returned from Appbase.                                                        |
-| **`objects`**       | `{[key: string]: number}` | None (required) | To set the click object ids followed by click positions, for example `{ "iphoneX_1234": 2 }`. |
-| `isSuggestionClick` | `boolean`                 | `false`         | Set as `true` to register as a suggestion click.                                              |
-| `eventData`         | `object`                  | null            | To set the custom events, for e.g `{ "platform": mac }`                                       |
+| Option              | Type                                 | Description                                                                                   |
+| ------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
+| **`query`**         | `string`                             | Search query, set to empty string to register as an empty query search.                       |
+| **`queryID`**       | `string`                             | Search query ID returned from Appbase.                                                        |
+| **`objects`**       | `{[key: string]: number}` (required) | To set the click object ids followed by click positions, for example `{ "iphoneX_1234": 2 }`. |
+| `isSuggestionClick` | `boolean`                            | Set as `true` to register as a suggestion click.                                              |
+| `eventData`         | `Object`                             | To set the custom events, for e.g `{ "platform": mac }`                                       |
 
 <b>Note: </b>
 
-`query` or `query_id` must be present.
+`query` or `queryID` must be present.
 
 An example with all possible options:
 
@@ -422,21 +445,21 @@ click(
 To record a conversion event
 
 ```ts
-conversion(conversionConfig: Object, callback: CallBack) => void
+conversion(conversionConfig: Object, callback: Function)
 ```
 
 conversion configuration options:
 
-| Option        | Type            | Default         | Description                                                             |
-| ------------- | --------------- | --------------- | ----------------------------------------------------------------------- |
-| **`query`**   | `string`        | None            | Search query, set to empty string to register as an empty query search. |
-| **`queryID`** | `string`        | None            | Search query ID returned from Appbase.                                  |
-| **`objects`** | `Array<string>` | None (required) | To set the converted object ids, for example: `["iphoneX_1234"]`.       |
-| `eventData`   | `object`        | null            | To set the custom events, for e.g `{ "platform": mac }`                 |
+| Option        | Type                       | Description                                                             |
+| ------------- | -------------------------- | ----------------------------------------------------------------------- |
+| **`query`**   | `string`                   | Search query, set to empty string to register as an empty query search. |
+| **`queryID`** | `string`                   | Search query ID returned from Appbase.                                  |
+| **`objects`** | `Array<string>` (required) | To set the converted object ids, for example: `["iphoneX_1234"]`.       |
+| `eventData`   | `Object`                   | To set the custom events, for e.g `{ "platform": mac }`                 |
 
 <b>Note: </b>
 
-`query` or `query_id` must be present.
+`query` or `queryID` must be present.
 
 An example with all possible options:
 
@@ -472,7 +495,7 @@ setHeaders(headers: Object)
 
 #### Set user
 
-Sets the user ID which will be used to retrieve the search headers.
+Sets the user ID. User ID helps to record an event for that particular user.
 
 ```ts
 setUserID(userID: string)
@@ -480,7 +503,7 @@ setUserID(userID: string)
 
 #### Set global events
 
-Sets the global events which will be added to all analytics requests.
+Sets the global event data. This will be added to all the analytics requests made by the instance.
 
 ```ts
 setGlobalEventData(globalEvents: Object)
