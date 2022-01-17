@@ -17,8 +17,6 @@ A universal analytics library that allows you to record search, click and conver
     - [Record clicks for a particular search event](#record-clicks-for-a-particular-search-event)
     - [Record clicks with particular events](#record-clicks-with-particular-events)
   - [Record conversions](#record-conversions)
-    - [Record conversions for a particular search event](#record-conversions-for-a-particular-search-event)
-    - [Record conversions with particular events](#record-conversions-with-particular-events)
   - [Set user](#set-user)
   - [Set global events](#set-global-events)
 - [API Reference](#api-reference)
@@ -189,26 +187,7 @@ aaInstance.click({
 
 ### Record conversions
 
-To record a search conversion.
-
-```ts
-const aa = require('@appbaseio/analytics');
-
-const aaInstance = aa.init({
-  index: 'INDEX_NAME',
-  credentials: 'AUTH_CREDENTIALS',
-  url: 'CLUSTER_URL'
-});
-
-aaInstance.conversion({
-  query: 'iphone',
-  objects: ['iphoneX_19348', 'iphone7_19348']
-});
-```
-
-#### Record conversions for a particular search event
-
-Use `queryID` instead of `query` to record conversions for a particular search event.
+Conversions must be recorded for a particular search event so it is required to define a `queryID` to record conversion.
 
 ```ts
 // Record a search
@@ -220,20 +199,6 @@ aaInstance.search({
 aaInstance.conversion({
   queryID: aaInstance.getQueryID(),
   objects: ['iphoneX_19348', 'iphone7_19348']
-});
-```
-
-#### Record conversions with particular events
-
-Attach the custom events to distinguish the conversion events.
-
-```ts
-aaInstance.conversion({
-  query: 'iphone',
-  objects: ['iphoneX_19348', 'iphone7_19348'],
-  eventData: {
-    conversion_source: 'promoted_collections'
-  }
 });
 ```
 
@@ -450,30 +415,22 @@ conversion(conversionConfig: Object, callback: Function)
 
 conversion configuration options:
 
-| Option        | Type                       | Description                                                             |
-| ------------- | -------------------------- | ----------------------------------------------------------------------- |
-| **`query`**   | `string`                   | Search query, set to empty string to register as an empty query search. |
-| **`queryID`** | `string`                   | Search query ID returned from Appbase.                                  |
-| **`objects`** | `Array<string>` (required) | To set the converted object ids, for example: `["iphoneX_1234"]`.       |
-| `eventData`   | `Object`                   | To set the custom events, for e.g `{ "platform": mac }`                 |
+| Option        | Type                       | Description                                                       |
+| ------------- | -------------------------- | ----------------------------------------------------------------- |
+| **`queryID`** | `string` (required)        | Search query ID returned from Appbase.                            |
+| **`objects`** | `Array<string>` (required) | To set the converted object ids, for example: `["iphoneX_1234"]`. |
 
 <b>Note: </b>
 
-`query` or `queryID` must be present.
+`queryID` must be present.
 
 An example with all possible options:
 
 ```ts
 conversion(
   {
-    query: 'iphone',
-    // or
     queryID: 'cf827a07-60a6-43ef-ab93-e1f8e1e3e1a8',
-    eventData: {
-      source: 'promoted_results'
-    },
-    objects: ['iphone_1234'],
-    isSuggestionClick: true
+    objects: ['iphone_1234']
   },
   (err, res) => {
     if (err) {

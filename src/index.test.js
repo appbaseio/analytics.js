@@ -1,10 +1,10 @@
 const AppbaseAnalytics = require('../dist/@appbaseio/analytics.cjs');
 
-const index = '.test';
-const credentials = 'foo:bar';
-const URL = 'http://localhost:8000';
+const index = '.analytics-js-test';
+const credentials = 'be8a0649fdf2:61fdfec3-d5d2-43c9-9506-8857ec3136ac';
+const URL = 'https://appbase-demo-ansible-abxiydt-arc.searchbase.io';
 
-test('registerSearch', () => {
+test('registerSearch', done => {
   var aa = AppbaseAnalytics.init({
     index,
     credentials,
@@ -31,17 +31,20 @@ test('registerSearch', () => {
       ]
     },
     (err, res) => {
-      if (!err) {
+      if (err) {
+        console.error(err);
         expect(true).toBe(false);
+        done();
       } else if (res && res.status === 200) {
         expect(true).toBe(true);
+        done();
       }
     }
   );
 });
 
 describe('registerClick', () => {
-  test('with query', () => {
+  test('with query', done => {
     var aa = AppbaseAnalytics.init({
       index,
       credentials,
@@ -53,11 +56,13 @@ describe('registerClick', () => {
         objects: { iphone_12345: 1 }
       },
       (err, res) => {
-        if (!err) {
+        if (err) {
+          console.error(err);
           expect(true).toBe(false);
+          done();
         } else if (res && res.status === 200) {
-          console.log(res);
           expect(true).toBe(true);
+          done();
         }
       }
     );
@@ -66,26 +71,42 @@ describe('registerClick', () => {
 });
 
 describe('registerConversion', () => {
-  test('with query', () => {
+  test('with query', done => {
     var aa = AppbaseAnalytics.init({
       index,
       credentials,
       url: URL
     });
-    aa.conversion(
+    // perform search
+    aa.search(
       {
-        query: 'iphone_X',
-        objects: ['iphone_12345']
+        query: 'iphone'
       },
       (err, res) => {
-        if (!err) {
+        if (err) {
+          console.error(err);
           expect(true).toBe(false);
+          done();
         } else if (res && res.status === 200) {
-          console.log(res);
-          expect(true).toBe(true);
+          // record conversion
+          aa.conversion(
+            {
+              queryID: aa.getQueryID(),
+              objects: ['iphone_12345']
+            },
+            (err2, res2) => {
+              if (err2) {
+                console.error(err2);
+                expect(true).toBe(false);
+                done();
+              } else if (res2 && res2.status === 200) {
+                expect(true).toBe(true);
+                done();
+              }
+            }
+          );
         }
       }
     );
   });
-  test('with query_id', () => {});
 });

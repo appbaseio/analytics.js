@@ -61,17 +61,12 @@ type ClickRequestBody = {
 
 type ConversionConfig = {
   objects: Array<string>,
-  query?: string,
-  queryID?: string,
-  eventData?: { [key: string]: string }
+  queryID?: string
 };
 
 type ConversionRequestBody = {
   conversion_on: Array<string>,
-  query?: string,
-  query_id?: string,
-  event_data?: { [key: string]: string },
-  user_iD?: string
+  query_id?: string
 };
 
 type CallBack = (err: any, res: any) => void;
@@ -152,12 +147,17 @@ function initClient(config: AnalyticsConfig = {}) {
             if (response && response.query_id) {
               metrics.queryID = response.query_id;
             }
+            if (callback) {
+              callback(err, res);
+            }
           })
           .catch(error => {
             console.error(error);
+            if (callback) {
+              callback(err, res);
+            }
           });
-      }
-      if (callback) {
+      } else if (callback) {
         callback(err, res);
       }
     };
@@ -196,15 +196,13 @@ function initClient(config: AnalyticsConfig = {}) {
     conversionConfig: ConversionConfig,
     callback?: CallBack
   ) => {
-    validateQuery(conversionConfig.query, conversionConfig.queryID);
+    validateQuery(null, conversionConfig.queryID);
     validateConversionObjects(conversionConfig.objects);
     // just to avoid the flow type error
     if (metrics._request) {
       const requestBody: ConversionRequestBody = {
         conversion_on: conversionConfig.objects,
-        query: conversionConfig.query,
-        query_id: conversionConfig.queryID,
-        event_data: conversionConfig.eventData
+        query_id: conversionConfig.queryID
       };
       metrics._request('conversion', requestBody, callback);
     }
@@ -224,6 +222,9 @@ function initClient(config: AnalyticsConfig = {}) {
   metrics.setHeaders = (headers: Object) => {
     metrics.headers = headers;
   };
+
+  // get queryID
+  metrics.getQueryID = () => metrics.queryID;
 
   return metrics;
 }
