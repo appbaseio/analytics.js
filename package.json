@@ -1,6 +1,6 @@
 {
   "name": "@appbaseio/analytics",
-  "version": "2.1.2-beta",
+  "version": "1.0.0",
   "description": "Universal analytics library for appbase.io apps",
   "main": "dist/@appbaseio/analytics.cjs.js",
   "jsnext:main": "dist/@appbaseio/analytics.es.js",
