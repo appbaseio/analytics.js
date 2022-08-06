@@ -17,6 +17,10 @@ A universal analytics library that allows you to record search, click and conver
     - [Record clicks for a particular search event](#record-clicks-for-a-particular-search-event)
     - [Record clicks with particular events](#record-clicks-with-particular-events)
   - [Record conversions](#record-conversions)
+  - [Save search](#save-search)
+  - [Get Saved searches](#get-saved-searches)
+  - [Favorite](#favorite)
+  - [Get Favorites](#get-favorites)
   - [Set user](#set-user)
   - [Set global events](#set-global-events)
 - [API Reference](#api-reference)
@@ -179,7 +183,7 @@ aaInstance.click({
     iphoneX_19348: 1,
     iphone7_19348: 3
   },
-  eventData: {
+  customEvents: {
     click_source: 'promoted_collections'
   }
 });
@@ -200,6 +204,108 @@ aaInstance.conversion({
   queryID: aaInstance.getQueryID(),
   objects: ['iphoneX_19348', 'iphone7_19348']
 });
+```
+
+### Save search
+
+To save a search state, `queryID` must be present.
+
+```ts
+// Save search state
+aaInstance.saveSearch({
+  queryID: 'cf600405-d4ed-42b0-8b09-08b594fa88d2',
+  saveSearchID: 'analytics-js-test',
+  saveSearchMeta: {
+    key1: 'value1'
+  },
+  userID: 'john@appbase.io',
+  customEvents: { platform: 'mac' }
+});
+```
+
+### Get Saved searches
+
+To retrieve saved searches, here we're fetching the saved searches for user with user id as `john@appbase.io`.
+
+```ts
+aa.getSavedSearches(
+  {
+    user_id: 'john@appbase.io'
+  },
+  (err, res) => {
+    if (err) {
+      console.error(err);
+    } else {
+      res
+        .json()
+        .then(savedSearches => {
+          // saved searches list
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+  }
+);
+```
+
+### Favorite
+
+To record a favorite document
+
+```ts
+aa.favorite({
+  favoriteOn: '1jftXXEBdEU4aeo6Gdqs',
+  queryID: 'cf600405-d4ed-42b0-8b09-08b594fa88d2',
+  source: {
+    authors: 'John Milton, John Leonard',
+    average_rating: 3.8,
+    average_rating_rounded: 4,
+    books_count: 819,
+    id: 984,
+    image: 'https://images.gr-assets.com/books/1455618673l/15997.jpg',
+    image_medium: 'https://images.gr-assets.com/books/1455618673m/15997.jpg',
+    isbn: '140424393',
+    language_code: 'eng',
+    original_publication_year: 1667,
+    original_series: '',
+    original_title: 'Paradise Lost',
+    ratings_count: 96316,
+    title: 'Paradise Lost'
+  },
+  id: 'analytics-js-test',
+  userID: 'john@appbase.io',
+  customEvents: { platform: 'mac' },
+  meta: {
+    key1: 'value1'
+  }
+});
+```
+
+### Get Favorites
+
+To retrieve favorite documents, here we're fetching the favorites for user with user id as `john@appbase.io`.
+
+```ts
+aa.getFavorites(
+  {
+    user_id: 'john@appbase.io'
+  },
+  (err, res) => {
+    if (err) {
+      console.error(err);
+    } else {
+      res
+        .json()
+        .then(favorites => {
+          // list of favorite document
+        })
+        .catch(err => {
+          console.error(err);
+        });
+    }
+  }
+);
 ```
 
 ### Set user
@@ -237,7 +343,7 @@ const aaInstance = aa.init({
 });
 
 // or set by using method
-aaInstance.setGlobalEventData({
+aaInstance.setGlobalCustomEvents({
   platform: 'ios'
 });
 ```
@@ -256,21 +362,21 @@ const aaInstance = aa.init({
   credentials: 'AUTH_CREDENTIALS',
   url: 'CLUSTER_URL',
   userID: 'USER_ID',
-  globalEventData: 'GLOBAL_EVENT_DATA'
+  globalCustomEvents: 'GLOBAL_CUSTOM_EVENTS'
   headers?: 'CUSTOM_HEADERS'
 });
 ```
 
 Optional configuration options:
 
-| Option            | Type                | Description                                                                                                                                                                                                                          |
-| ----------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`index`**       | `string` (required) | Elasticsearch index name.                                                                                                                                                                                                            |
-| **`credentials`** | `string` (required) | credentials as they appear on the Appbaseio dashboard. It should be a string of the format <b>username:password</b> and is used for authenticating the app.                                                                          |
-| **`url`**         | `string` (required) | Appbaseio cluster URL.                                                                                                                                                                                                               |
-| `userID`          | `string`            | UserID allows you to record events for a particular user. For example, you may want to know that how many different users are using the search.                                                                                      |
-| `globalEventData` | `Object`            | It allows you to set the <b>global</b> custom events which can be used to build your own analytics on top of the appbase.io analytics. [Read More](https://docs.appbase.io/docs/analytics/Implement/#how-to-implement-custom-events) |
-| `headers`         | `Object`            | Sometimes it may require to set extra headers to the analytics API. For example, you're using proxy middleware which adds an additional security layer.                                                                              |
+| Option               | Type                | Description                                                                                                                                                                                                                          |
+| -------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`index`**          | `string` (required) | Elasticsearch index name.                                                                                                                                                                                                            |
+| **`credentials`**    | `string` (required) | credentials as they appear on the Appbaseio dashboard. It should be a string of the format <b>username:password</b> and is used for authenticating the app.                                                                          |
+| **`url`**            | `string` (required) | Appbaseio cluster URL.                                                                                                                                                                                                               |
+| `userID`             | `string`            | UserID allows you to record events for a particular user. For example, you may want to know that how many different users are using the search.                                                                                      |
+| `globalCustomEvents` | `Object`            | It allows you to set the <b>global</b> custom events which can be used to build your own analytics on top of the appbase.io analytics. [Read More](https://docs.appbase.io/docs/analytics/Implement/#how-to-implement-custom-events) |
+| `headers`            | `Object`            | Sometimes it may require to set extra headers to the analytics API. For example, you're using proxy middleware which adds an additional security layer.                                                                              |
 
 An example with all possible options:
 
@@ -282,7 +388,7 @@ const aaInstance = aa.init({
   credentials: 'foo:bar',
   url: 'http://localhost:8000',
   userID: 'jon@abc.com',
-  globalEventData: {
+  globalCustomEvents: {
     platform: 'mac'
   },
   headers: {
@@ -303,13 +409,13 @@ search(searchConfig: Object, callback: Function)
 
 search configuration options:
 
-| Option        | Type     | Description                                                                            |
-| ------------- | -------- | -------------------------------------------------------------------------------------- |
-| **`query`**   | `string` | Search query, set to empty string to register as an empty query search.                |
-| **`queryID`** | `string` | Search query ID returned from Appbase.                                                 |
-| `eventData`   | `Object` | To set the custom events, for e.g `{ "platform": mac }`                                |
-| `filters`     | `Object` | It allows to record the applied facets on the search query, for e.g `{ "year": 2018 }` |
-| `hits`        | `Array`  | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
+| Option         | Type     | Description                                                                            |
+| -------------- | -------- | -------------------------------------------------------------------------------------- |
+| **`query`**    | `string` | Search query, set to empty string to register as an empty query search.                |
+| **`queryID`**  | `string` | Search query ID returned from Appbase.                                                 |
+| `customEvents` | `Object` | To set the custom events, for e.g `{ "platform": mac }`                                |
+| `filters`      | `Object` | It allows to record the applied facets on the search query, for e.g `{ "year": 2018 }` |
+| `hits`         | `Array`  | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
 
 <b>Note: </b>
 
@@ -323,7 +429,7 @@ search(
     query: 'iphone',
     // or
     queryID: 'cf827a07-60a6-43ef-ab93-e1f8e1e3e1a8',
-    eventData: {
+    customEvents: {
       source: 'promoted_results'
     },
     filters: {
@@ -373,7 +479,7 @@ click configuration options:
 | **`queryID`**       | `string`                             | Search query ID returned from Appbase.                                                        |
 | **`objects`**       | `{[key: string]: number}` (required) | To set the click object ids followed by click positions, for example `{ "iphoneX_1234": 2 }`. |
 | `isSuggestionClick` | `boolean`                            | Set as `true` to register as a suggestion click.                                              |
-| `eventData`         | `Object`                             | To set the custom events, for e.g `{ "platform": mac }`                                       |
+| `customEvents`      | `Object`                             | To set the custom events, for e.g `{ "platform": mac }`                                       |
 
 <b>Note: </b>
 
@@ -387,7 +493,7 @@ click(
     query: 'iphone',
     // or
     queryID: 'cf827a07-60a6-43ef-ab93-e1f8e1e3e1a8',
-    eventData: {
+    customEvents: {
       source: 'promoted_results'
     },
     objects: {
@@ -442,6 +548,177 @@ conversion(
 );
 ```
 
+#### Save search
+
+To save search state
+
+```ts
+saveSearch(config: Object, callback: Function)
+```
+
+configuration options:
+
+| Option               | Type                | Description                                             |
+| -------------------- | ------------------- | ------------------------------------------------------- |
+| **`queryID`**        | `string` (required) | Search query ID returned from Appbase.                  |
+| **`saveSearchID`**   | `string`            | Saved search ID.                                        |
+| **`saveSearchMeta`** | `Object`            | Meta data                                               |
+| **`userID`**         | `string`            | User Id.                                                |
+| `customEvents`       | `Object`            | To set the custom events, for e.g `{ "platform": mac }` |
+
+<b>Note: </b>
+
+`queryID` must be present.
+
+An example with all possible options:
+
+```ts
+saveSearch(
+  {
+    queryID: 'cf600405-d4ed-42b0-8b09-08b594fa88d2',
+    saveSearchID: 'analytics-js-test',
+    saveSearchMeta: {
+      key1: 'value1'
+    },
+    userID: 'john@appbase.io',
+    customEvents: { platform: 'mac' }
+  },
+  (err, res) => {
+    if (err) {
+      // handle error
+    } else if (res) {
+      // handle response
+    }
+  }
+);
+```
+
+#### Get saved searches
+
+To retrieve saved searches
+
+```ts
+getSavedSearches(queryParams: Object, callback: Function)
+```
+
+You can find the available query params at [here](https://api.reactivesearch.io/#3cbe91d1-64b9-4e2e-a929-0ee7e6a1acfc).
+
+```ts
+getSavedSearches(
+  {
+    user_id: 'john@appbase.io'
+  },
+  (err, res) => {
+    if (err) {
+      // handle error
+    } else if (res) {
+      res
+        .json()
+        .then(favorites => {
+          // list of saved searches
+        })
+        .catch(err => {});
+      // handle response
+    }
+  }
+);
+```
+
+#### Favorite
+
+To record a favorite document
+
+```ts
+favorite(config: Object, callback: Function)
+```
+
+configuration options:
+
+| Option           | Type                | Description                                             |
+| ---------------- | ------------------- | ------------------------------------------------------- |
+| **`queryID`**    | `string` (required) | Search query ID returned from Appbase.                  |
+| **`favoriteOn`** | `string` (required) | Favorite document ID.                                   |
+| **`source`**     | `Object` (required) | Favorite document source object data                    |
+| **`id`**         | `string`            | Favorite ID.                                            |
+| **`meta`**       | `Object`            | Meta data                                               |
+| **`userID`**     | `string`            | User Id.                                                |
+| `customEvents`   | `Object`            | To set the custom events, for e.g `{ "platform": mac }` |
+
+<b>Note: </b>
+
+`queryID`, `favoriteOn` and `source` must be present.
+
+An example with all possible options:
+
+```ts
+favorite(
+  {
+    favoriteOn: '1jftXXEBdEU4aeo6Gdqs',
+    queryID: 'cf600405-d4ed-42b0-8b09-08b594fa88d2',
+    source: {
+      authors: 'John Milton, John Leonard',
+      average_rating: 3.8,
+      average_rating_rounded: 4,
+      books_count: 819,
+      id: 984,
+      image: 'https://images.gr-assets.com/books/1455618673l/15997.jpg',
+      image_medium: 'https://images.gr-assets.com/books/1455618673m/15997.jpg',
+      isbn: '140424393',
+      language_code: 'eng',
+      original_publication_year: 1667,
+      original_series: '',
+      original_title: 'Paradise Lost',
+      ratings_count: 96316,
+      title: 'Paradise Lost'
+    },
+    id: 'analytics-js-test',
+    userID: 'john@appbase.io',
+    customEvents: { platform: 'mac' },
+    meta: {
+      key1: 'value1'
+    }
+  },
+  (err, res) => {
+    if (err) {
+      // handle error
+    } else if (res) {
+      // handle response
+    }
+  }
+);
+```
+
+#### Get favorites
+
+To retrieve saved favorites
+
+```ts
+getFavorites(queryParams: Object, callback: Function)
+```
+
+You can find the available query params at [here](https://api.reactivesearch.io/#11eda024-6b87-4921-8ed1-916483239087).
+
+```ts
+getFavorites(
+  {
+    user_id: 'john@appbase.io'
+  },
+  (err, res) => {
+    if (err) {
+      // handle error
+    } else if (res) {
+      res
+        .json()
+        .then(favorites => {
+          // list of favorites
+        })
+        .catch(err => {});
+      // handle response
+    }
+  }
+);
+```
+
 #### Set headers
 
 It allows you to set the custom headers in analytics endpoints.
@@ -463,7 +740,7 @@ setUserID(userID: string)
 Sets the global event data. This will be added to all the analytics requests made by the instance.
 
 ```ts
-setGlobalEventData(globalEvents: Object)
+setGlobalCustomEvents(globalEvents: Object)
 ```
 
 ##

@@ -34,6 +34,14 @@ export function validateQuery(query: string, queryID: string) {
   }
 }
 
+export function validateQueryID(queryID: string) {
+  if (!queryID) {
+    throw new Error(
+      'appbase-analytics: queryID must be present to save search/favorite'
+    );
+  }
+}
+
 export function validateClickObjects(objects: Object) {
   if (!objects || Object.keys(objects).length < 1) {
     throw new Error(
