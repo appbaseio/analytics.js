@@ -133,6 +133,9 @@ aaInstance.click({
   objects: {
     iphoneX_19348: 1,
     iphone7_19348: 3
+  },
+  meta: {
+    key1: 'value1'
   }
 });
 ```
@@ -202,7 +205,10 @@ aaInstance.search({
 // Record a conversion for the last search made
 aaInstance.conversion({
   queryID: aaInstance.getQueryID(),
-  objects: ['iphoneX_19348', 'iphone7_19348']
+  objects: ['iphoneX_19348', 'iphone7_19348'],
+  meta: {
+    key1: value1
+  }
 });
 ```
 
@@ -480,6 +486,7 @@ click configuration options:
 | **`objects`**       | `{[key: string]: number}` (required) | To set the click object ids followed by click positions, for example `{ "iphoneX_1234": 2 }`. |
 | `isSuggestionClick` | `boolean`                            | Set as `true` to register as a suggestion click.                                              |
 | `customEvents`      | `Object`                             | To set the custom events, for e.g `{ "platform": mac }`                                       |
+| **`meta`**          | `Object`                             | Meta data                                                                                     |
 
 <b>Note: </b>
 
@@ -499,7 +506,10 @@ click(
     objects: {
       iphone_1234: 2
     },
-    isSuggestionClick: true
+    isSuggestionClick: true,
+    meta: {
+      key1: value1
+    }
   },
   (err, res) => {
     if (err) {
@@ -525,6 +535,7 @@ conversion configuration options:
 | ------------- | -------------------------- | ----------------------------------------------------------------- |
 | **`queryID`** | `string` (required)        | Search query ID returned from Appbase.                            |
 | **`objects`** | `Array<string>` (required) | To set the converted object ids, for example: `["iphoneX_1234"]`. |
+| **`meta`**    | `Object`                   | Meta data                                                         |
 
 <b>Note: </b>
 
@@ -536,7 +547,10 @@ An example with all possible options:
 conversion(
   {
     queryID: 'cf827a07-60a6-43ef-ab93-e1f8e1e3e1a8',
-    objects: ['iphone_1234']
+    objects: ['iphone_1234'],
+    meta: {
+      key1: value1
+    }
   },
   (err, res) => {
     if (err) {

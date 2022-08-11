@@ -48,7 +48,8 @@ type ClickConfig = {
   queryID?: string,
   isSuggestionClick?: boolean,
   objects: { [key: string]: number },
-  customEvents?: { [key: string]: string }
+  customEvents?: { [key: string]: string },
+  meta?: Object
 };
 
 type ClickRequestBody = {
@@ -57,12 +58,14 @@ type ClickRequestBody = {
   query?: string,
   query_id?: string,
   custom_events?: { [key: string]: string },
-  user_id?: string
+  user_id?: string,
+  meta?: Object
 };
 
 type ConversionConfig = {
   objects: Array<string>,
-  queryID?: string
+  queryID?: string,
+  meta?: Object
 };
 
 type SaveSearchConfig = {
@@ -103,7 +106,8 @@ type FavoriteConfig = {
 
 type ConversionRequestBody = {
   conversion_on: Array<string>,
-  query_id?: string
+  query_id?: string,
+  meta?: Object
 };
 
 type CallBack = (err: any, res: any) => void;
@@ -250,7 +254,8 @@ function initClient(config: AnalyticsConfig = {}) {
         click_type: clickConfig.isSuggestionClick ? 'suggestion' : 'result',
         query: clickConfig.query,
         query_id: clickConfig.queryID,
-        custom_events: clickConfig.customEvents
+        custom_events: clickConfig.customEvents,
+        meta: clickConfig.meta
       };
       metrics._request(
         'PUT',
@@ -273,7 +278,8 @@ function initClient(config: AnalyticsConfig = {}) {
     if (metrics._request) {
       const requestBody: ConversionRequestBody = {
         conversion_on: conversionConfig.objects,
-        query_id: conversionConfig.queryID
+        query_id: conversionConfig.queryID,
+        meta: conversionConfig.meta
       };
       metrics._request(
         'PUT',
