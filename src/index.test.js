@@ -185,6 +185,33 @@ describe('saved search', () => {
       }
     );
   });
+  test('delete saved searched', done => {
+    var aa = AppbaseAnalytics.init({
+      index,
+      credentials,
+      url: URL
+    });
+    // perform search
+    aa.deleteSavedSearch('analytics-js-test', (err, res) => {
+      if (err) {
+        console.error(err);
+        expect(true).toBe(false);
+        done();
+      } else if (res && res.status === 200) {
+        res
+          .json()
+          .then(response => {
+            expect(response.id).toBe('analytics-js-test');
+            done();
+          })
+          .catch(err2 => {
+            console.error(err2);
+            expect(true).toBe(false);
+            done();
+          });
+      }
+    });
+  });
 });
 
 describe('favorite', () => {

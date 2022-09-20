@@ -125,6 +125,8 @@ type Metrics = {
   conversion?: (conversionConfig: ConversionConfig, callback: CallBack) => void,
   // To save search
   saveSearch?: (saveSearchConfig: SaveSearchConfig, callback: CallBack) => void,
+  // To delete saved search
+  deleteSavedSearch?: (saveSearchId: string, callback: CallBack) => void,
   // To retrieve saved searches
   getSavedSearches?: (filters?: Object, callback: CallBack) => void,
   // To record a favorite document
@@ -308,6 +310,17 @@ function initClient(config: AnalyticsConfig = {}) {
       'PUT',
       '_analytics/save-search',
       requestBody,
+      null,
+      callback
+    );
+  };
+
+  // To delete save search
+  metrics.deleteSavedSearch = (saveSearchId: string, callback?: CallBack) => {
+    metrics._request(
+      'DELETE',
+      '_analytics/save-search/' + saveSearchId,
+      null,
       null,
       callback
     );

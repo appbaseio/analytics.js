@@ -229,6 +229,15 @@ aaInstance.saveSearch({
 });
 ```
 
+### Delete Saved search
+
+To delete a saved search state by Id.
+
+```ts
+// Save search state
+aaInstance.deleteSavedSearch('analytics-js-test');
+```
+
 ### Get Saved searches
 
 To retrieve saved searches, here we're fetching the saved searches for user with user id as `john@appbase.io`.
@@ -597,6 +606,29 @@ saveSearch(
     userID: 'john@appbase.io',
     customEvents: { platform: 'mac' }
   },
+  (err, res) => {
+    if (err) {
+      // handle error
+    } else if (res) {
+      // handle response
+    }
+  }
+);
+```
+
+#### Delete Saved search
+
+To delete search state by Id
+
+```ts
+deleteSavedSearch(savedSearchId: string, callback: Function)
+```
+
+An example with all possible options:
+
+```ts
+deleteSavedSearch(
+  'analytics-js-test',
   (err, res) => {
     if (err) {
       // handle error
