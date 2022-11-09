@@ -28,6 +28,24 @@ test('registerSearch', done => {
           },
           type: '_doc'
         }
+      ],
+      impressions: [
+        {
+          id: '3DftXXEBdEU4aeo6Gdqs',
+          index: 'good-books-ds'
+        },
+        {
+          id: '3TftXXEBdEU4aeo6Gdqs',
+          index: 'good-books-ds'
+        },
+        {
+          id: '3jftXXEBdEU4aeo6Gdqs',
+          index: 'good-books-ds'
+        },
+        {
+          id: '3zftXXEBdEU4aeo6Gdqs',
+          index: 'good-books-ds'
+        }
       ]
     },
     (err, res) => {
