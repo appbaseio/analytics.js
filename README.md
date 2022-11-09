@@ -431,6 +431,7 @@ search configuration options:
 | `customEvents` | `Object` | To set the custom events, for e.g `{ "platform": mac }`                                |
 | `filters`      | `Object` | It allows to record the applied facets on the search query, for e.g `{ "year": 2018 }` |
 | `hits`         | `Array`  | To set the search hits, a hit object can have the `id`, `type` & `source` properties . |
+| `impressions`  | `Array`  | To set the impressions, a hit object can have the `id` & `index` properties.           |
 
 <b>Note: </b>
 
@@ -627,16 +628,13 @@ deleteSavedSearch(savedSearchId: string, callback: Function)
 An example with all possible options:
 
 ```ts
-deleteSavedSearch(
-  'analytics-js-test',
-  (err, res) => {
-    if (err) {
-      // handle error
-    } else if (res) {
-      // handle response
-    }
+deleteSavedSearch('analytics-js-test', (err, res) => {
+  if (err) {
+    // handle error
+  } else if (res) {
+    // handle response
   }
-);
+});
 ```
 
 #### Get saved searches
