@@ -17,6 +17,11 @@ type Hit = {
   source?: Object
 };
 
+type Impression = {
+  id: string,
+  index: 'good-books-ds'
+};
+
 type AnalyticsConfig = {
   index: string,
   url: string,
@@ -31,7 +36,8 @@ type SearchConfig = {
   queryID?: string,
   customEvents?: { [key: string]: string },
   filters?: { [key: string]: string },
-  hits?: Array<Hit>
+  hits?: Array<Hit>,
+  impressions?: Array<Impression>
 };
 
 type SearchRequestBody = {
@@ -233,7 +239,8 @@ function initClient(config: AnalyticsConfig = {}) {
         query_id: searchConfig.queryID,
         custom_events: searchConfig.customEvents,
         filters: searchConfig.filters,
-        hits: searchConfig.hits
+        hits: searchConfig.hits,
+        impressions: searchConfig.impressions
       };
       metrics._request(
         'PUT',
