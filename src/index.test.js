@@ -341,3 +341,35 @@ describe('favorite', () => {
     );
   });
 });
+
+describe('saveSessionUsefulness', () => {
+  test("should save session's usefulness", done => {
+    var aa = AppbaseAnalytics.init({
+      index,
+      credentials,
+      url: URL
+    });
+    // Save session usefulness
+    aa.saveSessionUsefulness(
+      'AISessionId',
+      {
+        useful: true,
+        reason: 'The AI provided accurate information.',
+        userID: 'john_doe',
+        meta: {
+          platform: 'windows'
+        }
+      },
+      (err, res) => {
+        if (err) {
+          console.error(err);
+          expect(true).toBe(false);
+          done();
+        } else if (res && res.status === 200) {
+          expect(true).toBe(true);
+          done();
+        }
+      }
+    );
+  });
+});
