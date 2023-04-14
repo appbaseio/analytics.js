@@ -341,7 +341,6 @@ describe('favorite', () => {
     );
   });
 });
-
 describe('saveSessionUsefulness', () => {
   test("should save session's usefulness", done => {
     var aa = AppbaseAnalytics.init({
@@ -351,7 +350,7 @@ describe('saveSessionUsefulness', () => {
     });
     // Save session usefulness
     aa.saveSessionUsefulness(
-      'AISessionId',
+      'nt3f6nuE7QHoEWB6JCX5Z6',
       {
         useful: true,
         reason: 'The AI provided accurate information.',
@@ -364,6 +363,10 @@ describe('saveSessionUsefulness', () => {
         if (err) {
           console.error(err);
           expect(true).toBe(false);
+          done();
+        } else if (res && res.status === 401) {
+          console.error('401: Credentials no allowed to access AI');
+          expect(false).toBe(true);
           done();
         } else if (res && res.status === 200) {
           expect(true).toBe(true);
