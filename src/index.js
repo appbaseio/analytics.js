@@ -116,6 +116,13 @@ type ConversionRequestBody = {
   meta?: Object
 };
 
+type UsefulnessConfig = {
+  useful: boolean,
+  reason?: string,
+  userID?: string,
+  meta?: Object
+};
+
 type CallBack = (err: any, res: any) => void;
 
 type Metrics = {
@@ -148,6 +155,12 @@ type Metrics = {
     url: string,
     body?: Object,
     queryParams?: Object,
+    callback?: CallBack
+  ) => void,
+  // Save session's usefulness
+  saveSessionUsefulness?: (
+    aiSessionId: string,
+    usefulnessConfig: UsefulnessConfig,
     callback?: CallBack
   ) => void
 };
@@ -393,6 +406,42 @@ function initClient(config: AnalyticsConfig = {}) {
 
   // get queryID
   metrics.getQueryID = () => metrics.queryID;
+
+  // Save session's usefulness
+  metrics.saveSessionUsefulness = (
+    aiSessionId: string,
+    usefulnessConfig: {
+      useful: boolean,
+      reason?: string,
+      userID?: string,
+      meta?: Object
+    },
+    callback?: CallBack
+  ) => {
+    if (typeof aiSessionId !== 'string' || aiSessionId === '') {
+      throw new Error('appbase-analytics: AISessionId is required');
+    }
+    if (typeof usefulnessConfig.useful !== 'boolean') {
+      throw new Error(
+        'appbase-analytics: useful property is required and must be a boolean'
+      );
+    }
+
+    const requestBody = {
+      useful: usefulnessConfig.useful,
+      reason: usefulnessConfig.reason,
+      user_id: usefulnessConfig.userID,
+      meta: usefulnessConfig.meta
+    };
+
+    metrics._request(
+      'PUT',
+      `_ai/${aiSessionId}/analytics`,
+      requestBody,
+      null,
+      callback
+    );
+  };
 
   return metrics;
 }

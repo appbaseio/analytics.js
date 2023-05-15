@@ -341,3 +341,40 @@ describe('favorite', () => {
     );
   });
 });
+describe('saveSessionUsefulness', () => {
+  test("should save session's usefulness", done => {
+    // Note: Chagne credentials or sessionId incase
+    // the test case fails
+    var aa = AppbaseAnalytics.init({
+      index,
+      credentials: 'a03a1cb71321:75b6603d-9456-4a5a-af6b-a487b309eb61',
+      url: URL
+    });
+    // Save session usefulness
+    aa.saveSessionUsefulness(
+      'nt3f6nuE7QHoEWB6JCX5Z6',
+      {
+        useful: true,
+        reason: 'The AI provided accurate information.',
+        userID: 'john_doe',
+        meta: {
+          platform: 'windows'
+        }
+      },
+      (err, res) => {
+        if (err) {
+          console.error(err);
+          expect(true).toBe(false);
+          done();
+        } else if (res && res.status === 401) {
+          console.error('401: Credentials no allowed to access AI');
+          expect(false).toBe(true);
+          done();
+        } else if (res && res.status === 200) {
+          expect(true).toBe(true);
+          done();
+        }
+      }
+    );
+  });
+});
